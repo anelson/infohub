@@ -30,15 +30,28 @@ namespace InfoHub.ContentModel
 			if (newParent == null) {
 				throw new ArgumentNullException("newParent");
 			}
+			
+			Move(newParent, newParent.Children.Count);
+		}
+		
+		public virtual void Move(IContentContainer newParent, int destIdx) {
+			if (newParent == null) {
+				throw new ArgumentNullException("newParent");
+			}
+
+			if (destIdx > newParent.Children.Count) {
+				throw new ArgumentOutOfRangeException("destIdx");
+			}
 
 			if (newParent != _parent) {
 				//Remove from old parent's Children collection, and add to new
 				_parent.Children.Remove(this);
 				_parent = newParent;
-				_parent.Children.Add(this);
+				_parent.Children.Insert(destIdx, this);
 
 				OnChanged(new EventArgs());
 			}
+			
 		}
 
 		public virtual IContentContainer Parent {

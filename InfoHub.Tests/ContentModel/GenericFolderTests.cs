@@ -76,6 +76,16 @@ namespace InfoHub.Tests.ContentModel {
 		}
 
 		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void MoveBogusIdxTest() {
+			//attempt to move to a bogus idx at a parent
+			//That is not permitted
+			GenericFolder folder = new GenericFolder(_root, "Bar");
+			GenericFolder folder2 = new GenericFolder(_root, "Folder2");
+			folder.Move(folder2, 10);
+		}
+
+		[Test]
 		public void MoveTest() {
 			GenericFolder folder1 = new GenericFolder(_root, "Bar");
 			GenericFolder folder2 = new GenericFolder(_root, "Baz");

@@ -38,11 +38,11 @@ namespace InfoHub.Tests.ContentModel {
 
 		[Test]
 		public void ParentTest() {
-			Assert.AreEqual(_cont.Children.Parent);
+			Assert.AreEqual(_cont, _cont.Children.Parent);
 		}
 
 		[Test]
-		[ExpectedException(typeof(ArgumentException))]
+		[ExpectedException(typeof(ArgumentNullException))]
 		public void AddNullObjectTest() {
 			//Null children aren't allowed either
 			_cont.Children.Add(null);
@@ -63,7 +63,7 @@ namespace InfoHub.Tests.ContentModel {
 		}
 
 		[Test]
-		[ExpectedException(typeof(IndexOutOfRangeException))]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void GetWithInvalidIndexTest() {
 			//The indexer is ok for retreiving elements, but only if the index is valid
 			Assert.IsNotNull(_cont.Children[100]);
@@ -89,29 +89,38 @@ namespace InfoHub.Tests.ContentModel {
 		}
 
 		[Test]
-		[ExpectedException(typeof(IndexOutOfRangeException))]
-		public void CarveOutEmptyListTest() {
-			//When the list is empty, any attempt to carve out of it with a non-zero
-			//length will fail
-			GenericDocument doc2 = new GenericDocument(_parent,  "Baz",  "text/plain");
-
-			_cont.Children.CarveOut(doc2.Children,  
+		[ExpectedException(typeof(ArgumentNullException))]
+		public void CarveOutNullDestTest() {
+			_cont.Children.CarveOut(null,  
 									0, 
 									0, 
 									1);
 		}
 
 		[Test]
-		[ExpectedException(typeof(IndexOutOfRangeException))]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void CarveOutEmptyListTest() {
+			//When the list is empty, any attempt to carve out of it with a non-zero
+			//length will fail
+			GenericDocument doc2 = new GenericDocument(_parent,  "Baz",  "text/plain");
+
+			_cont.Children.CarveOut(doc2,  
+									0, 
+									0, 
+									1);
+		}
+
+		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
 		public void CarveOutBadDestIdxTest() {
 			//Pass an invalid index into the dest list
 			GenericDocument doc2 = new GenericDocument(_parent,  "Baz",  "text/plain");
-			GenericContentObject obj1 = GenericContentObject(_cont);
-			GenericContentObject obj2 = GenericContentObject(_cont);
-			GenericContentObject obj3 = GenericContentObject(_cont);
-			GenericContentObject obj4 = GenericContentObject(_cont);
+			GenericContentObject obj1 = new GenericContentObject(_cont);
+			GenericContentObject obj2 = new GenericContentObject(_cont);
+			GenericContentObject obj3 = new GenericContentObject(_cont);
+			GenericContentObject obj4 = new GenericContentObject(_cont);
 
-			_cont.Children.CarveOut(doc2.Children,  
+			_cont.Children.CarveOut(doc2,  
 									10, 
 									0, 
 									1);
@@ -121,12 +130,12 @@ namespace InfoHub.Tests.ContentModel {
 		public void CarveOutEntireListTest() {
 			//Carve out the entire contents of the source list into the destination
 			GenericDocument doc2 = new GenericDocument(_parent,  "Baz",  "text/plain");
-			GenericContentObject obj1 = GenericContentObject(_cont);
-			GenericContentObject obj2 = GenericContentObject(_cont);
-			GenericContentObject obj3 = GenericContentObject(_cont);
-			GenericContentObject obj4 = GenericContentObject(_cont);
+			GenericContentObject obj1 = new GenericContentObject(_cont);
+			GenericContentObject obj2 = new GenericContentObject(_cont);
+			GenericContentObject obj3 = new GenericContentObject(_cont);
+			GenericContentObject obj4 = new GenericContentObject(_cont);
 			
-			_cont.Children.CarveOut(doc2.Children,  
+			_cont.Children.CarveOut(doc2,  
 									0, 
 									0, 
 									_cont.Children.Count);
@@ -142,12 +151,12 @@ namespace InfoHub.Tests.ContentModel {
 		public void CarveOutPartialListTest() {
 			//Carve out the part of the source list into the destination
 			GenericDocument doc2 = new GenericDocument(_parent,  "Baz",  "text/plain");
-			GenericContentObject obj1 = GenericContentObject(_cont);
-			GenericContentObject obj2 = GenericContentObject(_cont);
-			GenericContentObject obj3 = GenericContentObject(_cont);
-			GenericContentObject obj4 = GenericContentObject(_cont);
+			GenericContentObject obj1 = new GenericContentObject(_cont);
+			GenericContentObject obj2 = new GenericContentObject(_cont);
+			GenericContentObject obj3 = new GenericContentObject(_cont);
+			GenericContentObject obj4 = new GenericContentObject(_cont);
 			
-			_cont.Children.CarveOut(doc2.Children,  
+			_cont.Children.CarveOut(doc2,  
 									0, 
 									0, 
 									2);

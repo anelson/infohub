@@ -47,6 +47,16 @@ namespace InfoHub.Tests.ContentModel {
 		}
 
 		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void MoveBogusIdxTest() {
+			//attempt to move to a bogus idx at a parent
+			//That is not permitted
+			GenericContentContainer contain = new GenericContentContainer(_doc);
+			GenericDocument doc2 = new GenericDocument(_parent, "Doc1", "text/plain");
+			contain.Move(doc2, 10);
+		}
+
+		[Test]
 		[ExpectedException(typeof(ArgumentException))]
 		public void AddUnrelatedObjectTest() {
 			//Add a content object to the container's Children list that
@@ -54,14 +64,6 @@ namespace InfoHub.Tests.ContentModel {
 			GenericContentContainer contain = new GenericContentContainer(_doc);
 			GenericContentObject notMine = new GenericContentObject(_doc);
 			contain.Children.Add(notMine);
-		}
-
-		[Test]
-		[ExpectedException(typeof(ArgumentException))]
-		public void AddNonContentObjectTest() {
-			//Add something to the Children list that isn't an IContentObject-derivative
-			GenericContentContainer contain = new GenericContentContainer(_doc);
-			contain.Children.Add("Give me a reason");
 		}
 
 		[Test]

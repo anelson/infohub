@@ -61,7 +61,7 @@ namespace InfoHub.ContentModel
 			return( List.Contains( value ) );
 		}
 
-		public void CarveOut(IContentObjectList dest, int destIdx, int srcIdx, int srcLength) {
+		public void CarveOut(IContentContainer dest, int destIdx, int srcIdx, int srcLength) {
 			//Extract the child objects from srcIdx to srcIdx + srcLength - 1, and place them
 			//into dest starting at destIdx
 			if (dest == null) {
@@ -70,11 +70,11 @@ namespace InfoHub.ContentModel
 
 			if (srcIdx >= Count ||
 				srcIdx + srcLength - 1 >= Count) {
-				throw new IndexOutOfRangeException();
+				throw new ArgumentOutOfRangeException("srcIdx");
 			}
 
-			if (destIdx > dest.Count) {
-				throw new IndexOutOfRangeException();
+			if (destIdx > dest.Children.Count) {
+				throw new ArgumentOutOfRangeException("destIdx");
 			}
 
 			//For each object included in the carve-out, remove
@@ -86,10 +86,7 @@ namespace InfoHub.ContentModel
 				//the loop counter variable idx moves from 0 on up, 
 				//the index of the current object is always srcIdx
 				IContentObject obj = this[srcIdx];
-				RemoveAt(srcIdx);
-
-				obj.Move(dest.Parent);
-				Insert(destIdx+idx, obj);
+				obj.Move(dest, destIdx+idx);
 			}
 		}
 

@@ -17,6 +17,15 @@ namespace InfoHub.ContentModel
 		/// </summary>
 		/// <param name="newParent"></param>
 		void Move(IContentContainer newParent);
+		
+        /// <summary>
+        ///     Moves the object to a new parent, inserting the new child at a specific
+        ///     ordinal position in the new parent's child list
+        /// </summary>
+        /// 
+        /// <param name="newParent"></param>
+        /// <param name="destIdx"></param>
+		void Move(IContentContainer newParent, int destIdx);
 
 		/// <summary>
 		/// This object's parent, or null if and only if this is the top-level

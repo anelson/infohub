@@ -32,6 +32,6 @@ namespace InfoHub.ContentModel
 		/// <param name="destIdx"></param>
 		/// <param name="srcIdx"></param>
 		/// <param name="srcLength"></param>
-		void CarveOut(IContentObjectList dest, int destIdx, int srcIdx, int srcLength);
+		void CarveOut(IContentContainer dest, int destIdx, int srcIdx, int srcLength);
 	}
 }

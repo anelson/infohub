@@ -47,6 +47,16 @@ namespace InfoHub.Tests.ContentModel {
 		}
 
 		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void MoveBogusIdxTest() {
+			//attempt to move to a bogus idx at a parent
+			//That is not permitted
+			GenericContentObject obj = new GenericContentObject(_doc);
+			GenericDocument doc2 = new GenericDocument(_parent, "Doc1", "text/plain");
+			obj.Move(doc2, 10);
+		}
+
+		[Test]
 		public void MoveTest() {
 			GenericDocument doc1 = new GenericDocument(_parent, "Doc1", "text/plain");
 			GenericDocument doc2 = new GenericDocument(_parent, "Doc2", "text/plain");

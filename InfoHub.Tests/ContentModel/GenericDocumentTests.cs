@@ -61,7 +61,7 @@ namespace InfoHub.Tests.ContentModel {
 			GenericDocument doc = new GenericDocument(_parent, "Foo", "text/plain");
 
 			//Can't pass null to IsDescendentOf
-			doc.IsDescendentOf(_parent);
+			doc.IsDescendentOf(null);
 		}
 
 		[Test]
@@ -80,8 +80,18 @@ namespace InfoHub.Tests.ContentModel {
 			//That is not permitted
 			GenericDocument doc = new GenericDocument(_parent, "Foo", "text/plain");
 			GenericDocument doc2 = new GenericDocument(_parent, "Foo", "text/plain");
-			GenericContentObject notMine = new GenericContentObject(doc2);
+			GenericContentContainer notMine = new GenericContentContainer(doc2);
 			doc.Move(notMine);
+		}
+
+		[Test]
+		[ExpectedException(typeof(ArgumentOutOfRangeException))]
+		public void MoveBogusIdxTest() {
+			//attempt to move to a bogus idx at a parent
+			//That is not permitted
+			GenericDocument doc = new GenericDocument(_parent, "Foo", "text/plain");
+			GenericFolder folder2 = new GenericFolder(_parent, "Folder2");
+			doc.Move(folder2, 10);
 		}
 
 		[Test]
