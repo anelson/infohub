@@ -18,5 +18,12 @@ namespace InfoHub.ContentModel
 		void Update(IPersistenceBoundary obj);
 		void Delete(IPersistenceBoundary obj);
 		void Refresh(IPersistenceBoundary obj);
+
+		/// Deletes an object previously stored within a persistence boundary
+		void DeleteObject(Object obj);
+		/// Deletes an object previously stored within a persistence boundary, 
+		/// Optionally recursively deletes all objects referenced by the
+		/// specified object, up to (but not including) a persistence boundary
+		void DeleteObject(Object obj, bool recurse);
 	}
 }

@@ -5,6 +5,7 @@ using System.Reflection;
 
 using InfoHub.Common;
 using InfoHub.ContentModel;
+using InfoHub.ContentModel.Attributes;
 using InfoHub.DataStore;
 
 using com.db4o;
@@ -32,7 +33,48 @@ namespace InfoHub.DataStore.db4o
 
 			_logger.Info("LogMsg.Initializing", Db4o.version());
 
+			//Set initial container configuration
+			//activation depth is 1 (meaining primitive types only), since
+			//this assembly handles activation of all objects in a persistence
+			//boundary manually.
+			Db4o.configure().activationDepth(1);
+
+			//The content model objects do not know about db4o, therefore
+			//they can't possibly implement the callback interface.  Thus, save
+			//some compute cycles and don't even check
+			Db4o.configure().callbacks(false);
+
+			//Don't call constructors when instantiating objects
+			Db4o.configure().callConstructors(false);
+
+			//Throw an exception when storing a type that is not storable
+			//Usually this is due to a missing default ctor, but attempting to
+			//save event objects also causes this problem
 			Db4o.configure().exceptionsOnNotStorable(true);
+
+			//Tell db4o that the NotPersisted attribute decorates those
+			//fields that shouldn't be stored
+			Db4o.configure().markTransient(typeof(NotPersistedAttribute).FullName);
+
+			//Create a logger object for db4o's log messages, then use 
+			//a db4oPrintStreamLogger to adapt the logger object's interface
+			//to the PrintStream that db4o expects.
+
+			ILogger db4oLogger = factory.GetLogger(typeof(db4oPrintStreamLogger));
+			db4oPrintStreamLogger ps = new db4oPrintStreamLogger(db4oLogger);
+			Db4o.configure().setOut(ps);
+			
+			//Based on the log levels of the logger object, set db4o's log level
+			if (db4oLogger.IsDebugEnabled) {
+				//Debug level, so enable all the log messages
+				Db4o.configure().messageLevel(3);				
+			} else if (db4oLogger.IsInfoEnabled) {
+				//Include new/update/delete msgs, but no activation details
+				Db4o.configure().messageLevel(2);				
+			} else {
+				//No extra logging.  Just report open and close
+				Db4o.configure().messageLevel(1);
+			}
 
 			_logger.Info("LogMsg.Initialized");
 		}

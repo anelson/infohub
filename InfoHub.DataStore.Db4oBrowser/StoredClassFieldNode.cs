@@ -38,14 +38,24 @@ namespace InfoHub.DataStore.Db4oBrowser
 		protected override void LoadChildNodes() {
 			//If there is a StoredClass object for the type of this field, 
 			//create a child node of that class type
-			StoredClass fieldClass = null;
-			try {
-				fieldClass = _store.storedClass(_field.getStoredType());
-			} catch (Exception) {
-			}
+			Type fieldType = (Type)_field.getStoredType();
+			if (!fieldType.IsPrimitive) {
+				//The field isn't a primitive type, so try to get the StoredClass for
+				//the field
+				StoredClass fieldClass = null;
+				try {
+					fieldClass = _store.storedClass(_field.getStoredType());
+				} catch (Exception) {
+				}
 
-			if (fieldClass != null) {
-				Nodes.Add(new StoredClassNode(_store, fieldClass));
+				//Though undocumented, it appears that the StoredClass objects
+				//for primitives and intrinsics like String are somewhat broken, 
+				//and return a null class name.  Thus, don't do anything 
+				//with such classes
+				if (fieldClass != null &&
+					fieldClass.getName() != null) {
+					Nodes.Add(new StoredClassNode(_store, fieldClass));
+				}
 			}
 		}
 	}

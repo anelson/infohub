@@ -42,6 +42,12 @@ namespace InfoHub.Common
 			_resMgr = new ResourceManager(_resAsm.GetName().Name + "." + stringConstantsBundleName, _resAsm);
 		}
 
+		public ILogger Logger {
+			get {
+				return _logger;
+			}
+		}
+
 		/// <summary>
 		/// Writes a debug message to the log, using a named string resource 
 		/// to compute the message, expanding placeholders with the additional arguments

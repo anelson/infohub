@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.IO;
 using System.Reflection;
 
@@ -21,11 +22,29 @@ namespace InfoHub.DataStore.db4o
 		ExtObjectContainer _container;
 		String _path;
 		LoggerHelper _logger;
+		db4oTypeProcessor _typeProcessor;
+		ObjectRecursor _recursor;
 
 		public db4oDataStore(db4oDbEngine engine, ExtObjectContainer container, String path, ILoggerFactory factory) {
 			_engine = engine;
 			_container = container;
 			_path = path;
+
+			_typeProcessor = new db4oTypeProcessor(this);
+
+			//Here at load time, process the type information for all the types currently
+			//stored in the container
+			foreach (StoredClass sc in _container.storedClasses()) {
+				Type storedType = Type.GetType(sc.getName());
+
+				if (storedType != null) {
+					if (!_typeProcessor.IsAssemblyProcessed(storedType.Assembly)) {
+						_typeProcessor.ProcessAssembly(storedType.Assembly);
+					}
+				}
+			}			
+
+			_recursor = new ObjectRecursor(this);
 
 			_logger = new LoggerHelper(factory.GetLogger(typeof(db4oDataStore)), Assembly.GetExecutingAssembly(), "StringConstants");
 
@@ -120,7 +139,11 @@ namespace InfoHub.DataStore.db4o
 			ObjectSet set = qry.execute();
 			if (set.hasNext()) {
 				_logger.Debug("LogMsg.FoundFsoByPath", _path);
-				return (IFileSystemObject)set.next();
+				IFileSystemObject fso = (IFileSystemObject)set.next();
+
+				fso.Activate();
+
+				return fso;
 			} else {
 				_logger.Debug("LogMsg.NotFoundFsoByPath", _path);
 				return null;
@@ -138,78 +161,158 @@ namespace InfoHub.DataStore.db4o
 		}
 
 		public bool IsActivated(IPersistenceBoundary obj) {
-			return false;
+			if (obj == null) {
+				throw new ArgumentNullException("obj");
+			}
+			
+			//If this object's type hasn't been processed already, process it now
+			if (!_typeProcessor.IsAssemblyProcessed(obj.GetType().Assembly)) {
+				_typeProcessor.ProcessAssembly(obj.GetType().Assembly);
+			}
+
+			return _container.isActive(obj);
 		}
 
 		public void Deactivate(IPersistenceBoundary obj) {
-			IPersistenceNotificationCallback callback = obj as IPersistenceNotificationCallback;
-
-			if (callback != null) {
-				callback.BeforeDeactivate();
+			if (obj == null) {
+				throw new ArgumentNullException("obj");
+			}
+			
+			//If this object's type hasn't been processed already, process it now
+			if (!_typeProcessor.IsAssemblyProcessed(obj.GetType().Assembly)) {
+				_typeProcessor.ProcessAssembly(obj.GetType().Assembly);
 			}
 
-			if (callback != null) {
-				callback.AfterDeactivate();
+			//If this object is active, deactivate it, calling its callback 
+			//methods if present
+			if (IsActivated(obj)) {
+				_recursor.RecursivelyDo(_recursor.RecursePersistenceBoundaryGraph(obj), 
+										null, 
+										new RecursiveOperationDelegate(DoDeactivateObject));
 			}
 		}
 
 		public void Delete(IPersistenceBoundary obj) {
-			IPersistenceNotificationCallback callback = obj as IPersistenceNotificationCallback;
-
-			if (callback != null) {
-				callback.BeforeDelete();
+			if (obj == null) {
+				throw new ArgumentNullException("obj");
+			}
+			
+			//If this object's type hasn't been processed already, process it now
+			if (!_typeProcessor.IsAssemblyProcessed(obj.GetType().Assembly)) {
+				_typeProcessor.ProcessAssembly(obj.GetType().Assembly);
 			}
 
-			if (callback != null) {
-				callback.AfterDelete();
+			//If this object is stored, delete it from the store, calling
+			//its callback methods if present
+			if (_container.isStored(obj)) {
+				_recursor.RecursivelyDo(_recursor.RecursePersistenceBoundaryGraph(obj), 
+										null, 
+										new RecursiveOperationDelegate(DoDeleteObject));
 			}
 		}
 
 		public void Refresh(IPersistenceBoundary obj) {
+			if (obj == null) {
+				throw new ArgumentNullException("obj");
+			}
+			
+			//If this object's type hasn't been processed already, process it now
+			if (!_typeProcessor.IsAssemblyProcessed(obj.GetType().Assembly)) {
+				_typeProcessor.ProcessAssembly(obj.GetType().Assembly);
+			}
+
+			//If this object is active, refresh it from the store, calling
+			//its callback methods if present.  If it's not active, calling
+			//Refresh is bogus
+			if (!IsActivated(obj)) {
+				throw new InvalidOperationException();
+			}
+			
 			IPersistenceNotificationCallback callback = obj as IPersistenceNotificationCallback;
 
-			if (callback != null) {
-				callback.BeforeRefresh();
-			}
-
-			if (callback != null) {
-				callback.AfterRefresh();
-			}
+			_recursor.RecursivelyDo(_recursor.RecursePersistenceBoundaryGraph(obj), 
+									null, 
+									new RecursiveOperationDelegate(DoRefreshObject));
 		}
 
 		public void Update(IPersistenceBoundary obj) {
-			IPersistenceNotificationCallback callback = obj as IPersistenceNotificationCallback;
-
-			if (callback != null) {
-				callback.BeforeUpdate();
+			if (obj == null) {
+				throw new ArgumentNullException("obj");
+			}
+			
+			//If this object's type hasn't been processed already, process it now
+			if (!_typeProcessor.IsAssemblyProcessed(obj.GetType().Assembly)) {
+				_typeProcessor.ProcessAssembly(obj.GetType().Assembly);
 			}
 
-			if (callback != null) {
-				callback.AfterUpdate();
+			//If this object is active, update it in the store, calling
+			//its callback methods if present.  If it's not active, calling
+			//Update is bogus
+			if (!IsActivated(obj)) {
+				throw new InvalidOperationException();
 			}
+
+			_recursor.RecursivelyDo(_recursor.RecursePersistenceBoundaryGraph(obj), 
+									null, 
+									new RecursiveOperationDelegate(DoUpdateObject));
 		}
 
 		public void Add(IPersistenceBoundary obj) {
-			IPersistenceNotificationCallback callback = obj as IPersistenceNotificationCallback;
-
-			if (callback != null) {
-				callback.BeforeAdd();
+			if (obj == null) {
+				throw new ArgumentNullException("obj");
 			}
-
-			if (callback != null) {
-				callback.AfterAdd();
+			
+			//If this object's type hasn't been processed already, process it now
+			if (!_typeProcessor.IsAssemblyProcessed(obj.GetType().Assembly)) {
+				_typeProcessor.ProcessAssembly(obj.GetType().Assembly);
 			}
+			
+			//Add the object without regard for whether it's currently in the store/
+			//in db4o, an add and an update are the same operation (set()), therefore
+			//it is not important to strictly distinguish adds from updates, and
+			//its possible that some Content Model slieght-of-hand caused the persistence boundary
+			//to be added, without the recursive add of referenced objects that this method
+			//does			
+			_recursor.RecursivelyDo(_recursor.RecursePersistenceBoundaryGraph(obj), 
+									null, 
+									new RecursiveOperationDelegate(DoAddObject));
 		}
 
 		public void Activate(IPersistenceBoundary obj) {
-			IPersistenceNotificationCallback callback = obj as IPersistenceNotificationCallback;
-
-			if (callback != null) {
-				callback.BeforeActivate();
+			if (obj == null) {
+				throw new ArgumentNullException("obj");
+			}
+			
+			//If this object's type hasn't been processed already, process it now
+			if (!_typeProcessor.IsAssemblyProcessed(obj.GetType().Assembly)) {
+				_typeProcessor.ProcessAssembly(obj.GetType().Assembly);
 			}
 
-			if (callback != null) {
-				callback.AfterActivate();
+			//If this type is stored and not activated, activate it
+			//If it is activated, you can't double-activate
+			if (IsActivated(obj)) {
+				throw new InvalidOperationException();
+			}
+
+			_recursor.RecursivelyDo(_recursor.RecursePersistenceBoundaryGraph(obj), 
+									null, 
+									new RecursiveOperationDelegate(DoActivateObject));
+		}
+		
+		
+		public void DeleteObject(Object obj) {
+			DeleteObject(obj, false);
+		}
+		
+		public void DeleteObject(Object obj, bool recurse) {
+			if (_container.isStored(obj)) {
+				if (!recurse) {
+					DoDeleteObject(null,  obj);
+				} else {
+					_recursor.RecursivelyDo(_recursor.RecurseObjectGraph(obj), 
+											null, 
+											new RecursiveOperationDelegate(DoDeleteObject));
+				}
 			}
 		}
 
@@ -226,5 +329,138 @@ namespace InfoHub.DataStore.db4o
 		}
 
 		#endregion
+
+        /// <summary>An implementation of the RecursiveOperationDelegate that activates a single
+        ///     object.</summary>
+        /// 
+        /// <param name="cookie"></param>
+        /// <param name="obj"></param>
+        /// 
+        /// <returns></returns>
+		private bool DoActivateObject(Object cookie, Object obj) {
+			IPersistenceNotificationCallback callback = obj as IPersistenceNotificationCallback;
+
+			if (callback != null) {
+				callback.BeforeActivate();
+			}
+
+			_container.activate(obj, 1);
+
+			if (callback != null) {
+				callback.AfterActivate();
+			}
+			return true;
+		}
+
+        /// <summary>An implementation of the RecursiveOperationDelegate that deactivates a single
+        ///     object.</summary>
+        /// 
+        /// <param name="cookie"></param>
+        /// <param name="obj"></param>
+        /// 
+        /// <returns></returns>
+		private bool DoDeactivateObject(Object cookie, Object obj) {
+			IPersistenceNotificationCallback callback = obj as IPersistenceNotificationCallback;
+
+			if (callback != null) {
+				callback.BeforeDeactivate();
+			}
+
+			_container.deactivate(obj, 1);
+
+			if (callback != null) {
+				callback.AfterDeactivate();
+			}
+			return true;
+		}
+
+        /// <summary>An implementation of the RecursiveOperationDelegate that refreshes a single
+        ///     object.</summary>
+        /// 
+        /// <param name="cookie"></param>
+        /// <param name="obj"></param>
+        /// 
+        /// <returns></returns>
+		private bool DoRefreshObject(Object cookie, Object obj) {
+			IPersistenceNotificationCallback callback = obj as IPersistenceNotificationCallback;
+
+			if (callback != null) {
+				callback.BeforeRefresh();
+			}
+
+			_container.refresh(obj, 1);
+
+			if (callback != null) {
+				callback.AfterRefresh();
+			}
+			return true;
+		}
+
+        /// <summary>An implementation of the RecursiveOperationDelegate that adds a single
+        ///     object.</summary>
+        /// 
+        /// <param name="cookie"></param>
+        /// <param name="obj"></param>
+        /// 
+        /// <returns></returns>
+		private bool DoAddObject(Object cookie, Object obj) {
+			IPersistenceNotificationCallback callback = obj as IPersistenceNotificationCallback;
+
+			if (callback != null) {
+				callback.BeforeAdd();
+			}
+
+			_container.set(obj, 1);
+
+			if (callback != null) {
+				callback.AfterAdd();
+			}
+			return true;
+		}
+
+        /// <summary>An implementation of the RecursiveOperationDelegate that updates a single
+        ///     object.</summary>
+        /// 
+        /// <param name="cookie"></param>
+        /// <param name="obj"></param>
+        /// 
+        /// <returns></returns>
+		private bool DoUpdateObject(Object cookie, Object obj) {
+			IPersistenceNotificationCallback callback = obj as IPersistenceNotificationCallback;
+
+			if (callback != null) {
+				callback.BeforeUpdate();
+			}
+
+			_container.set(obj, 1);
+
+			if (callback != null) {
+				callback.AfterUpdate();
+			}
+			return true;
+		}
+
+        /// <summary>An implementation of the RecursiveOperationDelegate that deletes a single
+        ///     object.</summary>
+        /// 
+        /// <param name="cookie"></param>
+        /// <param name="obj"></param>
+        /// 
+        /// <returns></returns>
+		private bool DoDeleteObject(Object cookie, Object obj) {
+			IPersistenceNotificationCallback callback = obj as IPersistenceNotificationCallback;
+
+			if (callback != null) {
+				callback.BeforeDelete();
+			}
+
+			_container.delete(obj);
+
+			if (callback != null) {
+				callback.AfterDelete();
+			}
+			
+			return true;
+		}
 	}
 }

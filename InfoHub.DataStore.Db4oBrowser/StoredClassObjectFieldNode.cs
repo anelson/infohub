@@ -68,9 +68,18 @@ namespace InfoHub.DataStore.Db4oBrowser
 		private void CreateFieldValueNode(object value) {
 			//If this type has a StoredClass object, create a StoredClassObjectNode, else,
 			//use ToString() to populate a plain tree node
-			StoredClass fieldValueClass = _store.storedClass(value.GetType());
+			//
+			//If the value is a primitive or StoredClass.getName returns null, this
+			//seems to indicate a primitive value whose StoredClass instance will not behave
+			//correctly
+            StoredClass fieldValueClass = null;
 
-			if (fieldValueClass != null) {
+			if (!value.GetType().IsPrimitive) {
+				fieldValueClass = _store.storedClass(value.GetType());
+			}
+
+			if (fieldValueClass != null &&
+				fieldValueClass.getName() != null) {
 				Nodes.Add(new StoredClassObjectNode(_store, fieldValueClass, _store.getID(value)));
 			} else {
 				Nodes.Add(new TreeNode(value.ToString()));
