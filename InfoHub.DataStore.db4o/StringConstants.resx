@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" />
+							<xsd:attribute name="type" type="xsd:string" />
+							<xsd:attribute name="mimetype" type="xsd:string" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="ResMimeType">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="Version">
+		<value>1.0.0.0</value>
+	</resheader>
+	<resheader name="Reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="Writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="LogMsg.Initializing">
+		<value>Initializing db4o database engine version {0}</value>
+	</data>
+	<data name="LogMsg.Initialized">
+		<value>db4o database engine initialized</value>
+	</data>
+	<data name="LogMsg.Destroying">
+		<value>Destroying data store '{0}'</value>
+	</data>
+	<data name="LogMsg.Opening">
+		<value>Opening data store '{0}'</value>
+	</data>
+	<data name="LogMsg.DataStoreConstructed">
+		<value>Data store '{0}' open</value>
+	</data>
+	<data name="LogMsg.DataStoreClosing">
+		<value>Data store '{0}' closing</value>
+	</data>
+	<data name="LogMsg.DataStoreClosed">
+		<value>Data store '{0}' closed</value>
+	</data>
+	<data name="LogMsg.BeginningTransaction">
+		<value>Data store '{0}' beginning transaction</value>
+	</data>
+	<data name="LogMsg.DeletingObject">
+		<value>Data store '{0}' deleting object of type '{1}'</value>
+	</data>
+	<data name="LogMsg.DeletedObject">
+		<value>Data store '{0}' deleted object of type '{1}'</value>
+	</data>
+	<data name="LogMsg.AddingObject">
+		<value>Data store '{0}' adding object of type '{1}'</value>
+	</data>
+	<data name="LogMsg.AddedObject">
+		<value>Data store '{0}' added object of type '{1}'</value>
+	</data>
+	<data name="LogMsg.ActivatingObject">
+		<value>Data store '{0}' activating object of type '{1}'</value>
+	</data>
+	<data name="LogMsg.ActivatedObject">
+		<value>Data store '{0}' activated object of type '{1}'</value>
+	</data>
+	<data name="LogMsg.UpdatingObject">
+		<value>Data store '{0}' updating object of type '{1}'</value>
+	</data>
+	<data name="LogMsg.UpdatedObject">
+		<value>Data store '{0}' updated object of type '{1}'</value>
+	</data>
+	<data name="LogMsg.CommittingTransaction">
+		<value>Data store '{0}' committing transaction</value>
+	</data>
+	<data name="LogMsg.CommittedTransaction">
+		<value>Data store '{0}' committed transaction</value>
+	</data>
+	<data name="LogMsg.RollingBackTransaction">
+		<value>Data store '{0}' rolling back transaction</value>
+	</data>
+	<data name="LogMsg.RolledBackTransaction">
+		<value>Data store '{0}' rolled back transaction</value>
+	</data>
+	<data name="LogMsg.EnumeratingRootFolders">
+		<value>Data store '{0}' enumerating root folders</value>
+	</data>
+	<data name="LogMsg.EnumeratedRootFolders">
+		<value>Data store '{0}' enumerated root folders (found {1})</value>
+	</data>
+	<data name="LogMsg.GettingFsoByPath">
+		<value>Data store '{0}' getting file system object in root '{1}' at path '{2}'</value>
+	</data>
+	<data name="LogMsg.FoundFsoByPath">
+		<value>Data store '{0}' found file system object by path</value>
+	</data>
+	<data name="LogMsg.NotFoundFsoByPath">
+		<value>Data store '{0}' couldn't find file system object by path</value>
+	</data>
+	<data name="LogMsg.DeactivatingObject">
+		<value>Data store '{0}' deactivating object of type '{1}'</value>
+	</data>
+	<data name="LogMsg.DeactivatedObject">
+		<value>Data store '{0}' deactivated object of type '{1}'</value>
+	</data>
+</root>
