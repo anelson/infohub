@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<project  xmlns="http://nant.sf.net/schemas/nant.xsd" name="InfoHub" default="Debug">
+
+    <property name="ncover.exe" value="D:\Programming\NCover\NCover.Console.exe" />
+    <property name="nunit-console.exe" value="&quot;D:\Programming\NUnit 2.2\bin\nunit-console.exe&quot;" />
+    
+    <property name="infohub.dir" value="." dynamic="true" />
+    <property name="infohub.tests.dir" value="${path::combine(infohub.dir, 'InfoHub.Tests')}" dynamic="true" />
+    <property name="infohub.tests.bin.dir" value="${path::combine(infohub.tests.dir, 'bin\' + build.config)}" dynamic="true" />
+    <property name="infohub.tests.dll" value="${path::combine(infohub.tests.bin.dir, 'InfoHub.Tests.dll')}" dynamic="true" />
+                                                                                   
+
+    <target name="all" depends="build, test, coverage, fxcop">
+    </target>
+    
+    <target name="Debug">
+        <property name="build.config" value="Debug" />
+        <call target="all" />
+    </target>
+    
+    <target name="Release">
+        <property name="build.config" value="Release" />
+        <call target="all" />
+    </target>
+
+    <target name="clean">
+        <!-- Clean project output files -->
+        <delete>
+            <fileset>
+                <include name="*/bin/*" />
+                <include name="*/obj/*" />
+            </fileset>
+        </delete>
+    </target>
+
+    <target name="build" depends="clean">
+        <solution solutionfile="InfoHub.sln" configuration="${build.config}" />
+    </target>
+
+    <target name="test">
+        <nunit2 failonerror="true">
+            <formatter type="Plain" />
+            <test appconfig="${infohub.tests.dir}\app.config"
+                assemblyname="${infohub.tests.dll}" />
+        </nunit2>
+    </target>
+
+    <target name="coverage">
+        <exec verbose="true"
+            program="${ncover.exe}"
+            basedir=".">
+            <arg value="/c" />
+            <arg line="${nunit-console.exe} ${infohub.tests.dll}" />
+        </exec>
+
+        <style in="${path::combine(infohub.tests.bin.dir, 'Coverage.xml')}"
+            style="Coverage.xsl"
+            out="Coverage.html" />
+
+        <style in="${path::combine(infohub.tests.bin.dir, 'Coverage.xml')}"
+            style="Uncovered.xsl"
+            out="Uncovered.html" />
+    </target>
+
+    <target name="fxcop">
+    </target>
+</project>
+
+          
