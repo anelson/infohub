@@ -9,14 +9,20 @@ namespace InfoHub.ContentModel
 	public class AbstractRootFolder : AbstractFolder, IRootFolder
 	{
 		String _source;
+		IObjectPersistor _persistor;
 
-		public AbstractRootFolder(String source) : base(null, System.IO.Path.DirectorySeparatorChar.ToString())
+		public AbstractRootFolder(String source, IObjectPersistor persistor) : base(null, System.IO.Path.DirectorySeparatorChar.ToString())
 		{
 			if (source == null) {
 				throw new ArgumentNullException("source");
 			}
 
+			if (persistor == null) {
+				throw new ArgumentNullException("persistor");
+			}
+
 			_source = source;
+			_persistor = persistor;
 		}
 
 		public override void Move(IContentContainer newParent) {
@@ -33,6 +39,20 @@ namespace InfoHub.ContentModel
 			}
 		}
 
-		#endregion
+		public virtual IObjectPersistor Persistor {
+			get {
+				return _persistor;
+			}
+		}
+
+			#endregion
+
+			public override IObjectPersistor RootPersistor {
+			get {
+				//The root folder knows about its own root persistor
+				return _persistor;
+			}
+		}
+
 	}
 }

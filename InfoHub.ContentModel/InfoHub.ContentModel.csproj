@@ -116,7 +116,7 @@
                 />
                 <Reference
                     Name = "System.XML"
-                    AssemblyName = "System.XML"
+                    AssemblyName = "System.Xml"
                     HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
                 />
                 <Reference
@@ -199,6 +199,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "ICollectionFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IContentContainer.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -229,12 +234,47 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "IObjectPersistor.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IPersistenceBoundary.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "IPersistenceNotificationCallback.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "IRootFolder.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
                     RelPath = "ITypedContentContainer.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Attributes\CascadeAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Attributes\IndexedAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Attributes\NotPersistedAttribute.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Attributes\StoredPropertyAttribute.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -250,6 +290,16 @@
                 />
                 <File
                     RelPath = "Text\RichTextDocument.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Text\TextBlock.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Text\TextLine.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

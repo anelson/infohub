@@ -7,7 +7,7 @@ namespace InfoHub.ContentModel
 	/// <summary>
 	/// Abstract base implementation of IFileSystemObject
 	/// </summary>
-	public abstract class AbstractFileSystemObject : AbstractContentContainer, IFileSystemObject
+	public abstract class AbstractFileSystemObject : AbstractContentContainer, IFileSystemObject, IPersistenceNotificationCallback
 	{
 		String _name;
 
@@ -20,6 +20,76 @@ namespace InfoHub.ContentModel
 
 			_name = name;
 		}
+
+		#region IPersistenceBoundary members
+		
+		public virtual bool IsActivated {
+			get {
+				return RootPersistor.IsActivated(this);
+			}
+		}
+
+		public virtual void Activate() {
+			RootPersistor.Activate(this);
+		}
+
+		public virtual void Update() {
+			RootPersistor.Update(this);
+		}
+		
+		public virtual void Refresh() {
+			RootPersistor.Refresh(this);
+		}
+		
+		public virtual void Delete() {
+			RootPersistor.Delete(this);
+		}		
+
+		public virtual void Deactivate() {
+			RootPersistor.Deactivate(this);
+		}
+
+		#endregion
+
+		#region IPersistenceNotificationCallback Members
+
+		public virtual void BeforeActivate() {
+		}
+
+		public virtual void BeforeAdd() {
+		}
+
+		public virtual void BeforeUpdate() {
+		}
+
+		public virtual void BeforeRefresh() {
+		}
+
+		public virtual void BeforeDelete() {
+		}
+
+		public virtual void BeforeDeactivate() {
+		}
+
+		public virtual void AfterActivate() {
+		}
+
+		public virtual void AfterAdd() {
+		}
+
+		public virtual void AfterUpdate() {
+		}
+
+		public virtual void AfterRefresh() {
+		}
+
+		public virtual void AfterDelete() {
+		}
+
+		public virtual void AfterDeactivate() {
+		}
+
+		#endregion
 
 		#region IFileSystemObject Members
 
@@ -62,5 +132,15 @@ namespace InfoHub.ContentModel
 		}
 
 		#endregion
+
+		/// <summary>
+		/// The IObjectPersistor to use for this object.  Obtains 
+		/// the object persistor from the root folder of this object.
+		/// </summary>
+		public override IObjectPersistor RootPersistor {
+			get {
+				return this.ParentFolder.RootFolder.Persistor;
+			}
+		}
 	}
 }

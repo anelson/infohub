@@ -125,12 +125,6 @@
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
                 <Reference
-                    Name = "nunit.framework"
-                    AssemblyName = "nunit.framework"
-                    HintPath = "D:\Programming\NUnit 2.2\bin\nunit.framework.dll"
-                    AssemblyFolderKey = "hklm\dn\nunit.framework"
-                />
-                <Reference
                     Name = "Spring.Core"
                     AssemblyName = "Spring.Core"
                     HintPath = "P:\Source Code\spring.net-0.6.0-rc2\bin\Spring.Core.dll"
@@ -143,6 +137,32 @@
                 <Reference
                     Name = "InfoHub.ContentModel"
                     Project = "{1F19F2F5-899E-4E6D-87B7-D20CB8B5C352}"
+                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
+                />
+                <Reference
+                    Name = "DotNetMock"
+                    AssemblyName = "DotNetMock"
+                    HintPath = "D:\Programming\DotNetMock\bin\DotNetMock.dll"
+                />
+                <Reference
+                    Name = "DotNetMock.Framework"
+                    AssemblyName = "DotNetMock.Framework"
+                    HintPath = "D:\Programming\DotNetMock\bin\DotNetMock.Framework.dll"
+                />
+                <Reference
+                    Name = "Accessibility"
+                    AssemblyName = "Accessibility"
+                    HintPath = "C:\WINDOWS\Microsoft.NET\Framework\v1.1.4322\Accessibility.dll"
+                />
+                <Reference
+                    Name = "nunit.framework"
+                    AssemblyName = "nunit.framework"
+                    HintPath = "D:\Programming\NUnit 2.2\bin\nunit.framework.dll"
+                    AssemblyFolderKey = "hklm\dn\nunit.framework"
+                />
+                <Reference
+                    Name = "InfoHub.DataStore"
+                    Project = "{0B7A89ED-65B6-4C1E-A9A8-CA7249F2A7EC}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
             </References>
@@ -169,6 +189,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "ContentModel\ContentModelMockObjectFactory.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "ContentModel\GenericContentContainerTests.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -190,6 +215,11 @@
                 />
                 <File
                     RelPath = "ContentModel\GenericRootFolderTests.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "DataStore\DataStoreMockObjectFactory.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />

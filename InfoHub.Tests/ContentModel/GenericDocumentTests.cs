@@ -17,7 +17,7 @@ namespace InfoHub.Tests.ContentModel {
 
 		[SetUp]
 		public void CreateParent() {
-			_root = new GenericRootFolder("Foo");
+			_root = new GenericRootFolder("Foo", ContentModelMockObjectFactory.CreateObjectPersistor());
 			_parent = new GenericFolder(_root, "Bar");
 		}
 
@@ -96,7 +96,7 @@ namespace InfoHub.Tests.ContentModel {
 
 		[Test]
 		public void MoveTest() {
-			GenericRootFolder root = new GenericRootFolder("Foo");
+			GenericRootFolder root = new GenericRootFolder("Foo", ContentModelMockObjectFactory.CreateObjectPersistor());
 			GenericFolder folder1 = new GenericFolder(root, "Folder1");
 			GenericFolder folder2 = new GenericFolder(root, "Folder2");
 			GenericFolder folder3 = new GenericFolder(folder2, "Folder3");
@@ -130,7 +130,7 @@ namespace InfoHub.Tests.ContentModel {
 
 		[Test]
 		public void AncestryTest() {
-			GenericRootFolder root = new GenericRootFolder("Foo");
+			GenericRootFolder root = new GenericRootFolder("Foo", ContentModelMockObjectFactory.CreateObjectPersistor());
 			GenericFolder folder1 = new GenericFolder(root, "Folder1");
 			GenericFolder folder2 = new GenericFolder(root, "Folder2");
 			GenericFolder folder3 = new GenericFolder(folder2, "Folder3");

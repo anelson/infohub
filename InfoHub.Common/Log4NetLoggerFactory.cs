@@ -15,10 +15,8 @@ namespace InfoHub.Common
 	{
 		public Log4NetLoggerFactory()
 		{
-			//In debug builds, add the .NET Trace output log appender
-#if DEBUG
-			BasicConfigurator.Configure(new log4net.Appender.TraceAppender(new log4net.Layout.SimpleLayout()));
-#endif
+			//Load the config from the app.config file
+			DOMConfigurator.Configure();
 		}
 
 		#region ILoggerFactory Members

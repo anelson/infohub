@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
+using InfoHub.Common;
+using InfoHub.ContentModel.Attributes;
+
 namespace InfoHub.ContentModel
 {
 	/// <summary>
@@ -10,7 +13,10 @@ namespace InfoHub.ContentModel
 	public abstract class AbstractContentObject : IContentObject
 	{
 		IContentContainer _parent;
-		Hashtable _propBag;
+		IDictionary _propBag;
+
+		[NotPersisted]
+		ContentObjectChangedEventHandler _changed;
 
 		public AbstractContentObject(IContentContainer parent) {
 			_parent = parent;
@@ -79,20 +85,57 @@ namespace InfoHub.ContentModel
 		public virtual IDictionary PropertyBag {
 			get {
 				if (_propBag == null) {
-					_propBag = new Hashtable();
+					//Get the collection factory from the object persistor
+					ICollectionFactory cf = RootPersistor.CollectionFactory;
+
+					if (cf == null) {
+						throw new ApplicationException();
+					}
+
+					_propBag = cf.CreateDictionary(this);
 				}
 
 				return _propBag;
 			}
 		}
 
-		public event ContentObjectChangedEventHandler Changed;
+		public event ContentObjectChangedEventHandler Changed {
+			add {
+				_changed += value;
+			}
+
+			remove {
+				_changed -= value;
+			}
+		}
 
 		#endregion
 
 		protected virtual void OnChanged(EventArgs e) {
-			if (Changed != null) {
-				Changed(this, e);
+			if (_changed != null) {
+				_changed(this, e);
+			}
+		}
+
+		/// <summary>
+		/// The IObjectPersistor to use for this object.  Obtains 
+		/// the object persistor from the root folder of this object.
+		/// </summary>
+		public virtual IObjectPersistor RootPersistor {
+			get {
+				//Navigate the ancestry hierarchy until a IFolder
+				//is found, then use that to get the root folder, which exposes
+				//the Persistor property
+				IFileSystemObject fsParent = FileSystemParent;
+				IFolder parentFolder = null;
+
+				if (fsParent is IFolder) {
+					parentFolder = (IFolder)fsParent;
+				} else {
+					parentFolder = fsParent.ParentFolder;
+				}
+
+				return parentFolder.RootFolder.Persistor;
 			}
 		}
 	}

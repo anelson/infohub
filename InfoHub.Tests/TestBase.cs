@@ -13,8 +13,6 @@ namespace InfoHub.Tests
 	/// </summary>
 	public abstract class TestBase
 	{
-		private static IApplicationContext _ctx;
-
 		/// <summary>
 		/// Static ctor, called once when this type is first loaded.
 		/// 
@@ -25,9 +23,9 @@ namespace InfoHub.Tests
 			//The Spring.Net config handler for spring/context implements
 			//IApplicationContext, hence this magical pulling of an IApplicationContext
 			//out of an Object.
-			_ctx = (IApplicationContext)ConfigurationSettings.GetConfig("spring/context");
+			InfoHub.Common.AppContext.InitializeAppContext();
 
-			if (_ctx == null) {
+			if (InfoHub.Common.AppContext.Ctx == null) {
 				//For some reason, the spring/context section of the config file is not present
 				//Tests will likely fail, but throwing an exception here makes nunit & company
 				//silently fail, so hope a dire log4net warning does the trick instead
@@ -41,7 +39,7 @@ namespace InfoHub.Tests
 		/// </summary>
 		internal static IApplicationContext AppContext {
 			get {
-				return _ctx;
+				return InfoHub.Common.AppContext.Ctx;
 			}
 		}
 	}

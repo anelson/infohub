@@ -15,6 +15,22 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfoHub.ContentModel", "Inf
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfoHub.DataStore", "InfoHub.DataStore\InfoHub.DataStore.csproj", "{0B7A89ED-65B6-4C1E-A9A8-CA7249F2A7EC}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfoHub.DataStore.db4o", "InfoHub.DataStore.db4o\InfoHub.DataStore.db4o.csproj", "{6594B724-E9BE-4E57-A4FF-4C38DB8CDC2B}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfoHub.DataStore.TestConsole", "InfoHub.DataStore.TestConsole\InfoHub.DataStore.TestConsole.csproj", "{DB922549-AEA4-4179-B4A2-2097B6D8DB07}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfoHub.DataStore.Db4oBrowser", "InfoHub.DataStore.Db4oBrowser\InfoHub.DataStore.Db4oBrowser.csproj", "{2DCE82DB-F314-4E42-873C-F8F4F68ED820}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -37,6 +53,22 @@ Global
 		{1F19F2F5-899E-4E6D-87B7-D20CB8B5C352}.Debug.Build.0 = Debug|.NET
 		{1F19F2F5-899E-4E6D-87B7-D20CB8B5C352}.Release.ActiveCfg = Release|.NET
 		{1F19F2F5-899E-4E6D-87B7-D20CB8B5C352}.Release.Build.0 = Release|.NET
+		{0B7A89ED-65B6-4C1E-A9A8-CA7249F2A7EC}.Debug.ActiveCfg = Debug|.NET
+		{0B7A89ED-65B6-4C1E-A9A8-CA7249F2A7EC}.Debug.Build.0 = Debug|.NET
+		{0B7A89ED-65B6-4C1E-A9A8-CA7249F2A7EC}.Release.ActiveCfg = Release|.NET
+		{0B7A89ED-65B6-4C1E-A9A8-CA7249F2A7EC}.Release.Build.0 = Release|.NET
+		{6594B724-E9BE-4E57-A4FF-4C38DB8CDC2B}.Debug.ActiveCfg = Debug|.NET
+		{6594B724-E9BE-4E57-A4FF-4C38DB8CDC2B}.Debug.Build.0 = Debug|.NET
+		{6594B724-E9BE-4E57-A4FF-4C38DB8CDC2B}.Release.ActiveCfg = Release|.NET
+		{6594B724-E9BE-4E57-A4FF-4C38DB8CDC2B}.Release.Build.0 = Release|.NET
+		{DB922549-AEA4-4179-B4A2-2097B6D8DB07}.Debug.ActiveCfg = Debug|.NET
+		{DB922549-AEA4-4179-B4A2-2097B6D8DB07}.Debug.Build.0 = Debug|.NET
+		{DB922549-AEA4-4179-B4A2-2097B6D8DB07}.Release.ActiveCfg = Release|.NET
+		{DB922549-AEA4-4179-B4A2-2097B6D8DB07}.Release.Build.0 = Release|.NET
+		{2DCE82DB-F314-4E42-873C-F8F4F68ED820}.Debug.ActiveCfg = Debug|.NET
+		{2DCE82DB-F314-4E42-873C-F8F4F68ED820}.Debug.Build.0 = Debug|.NET
+		{2DCE82DB-F314-4E42-873C-F8F4F68ED820}.Release.ActiveCfg = Release|.NET
+		{2DCE82DB-F314-4E42-873C-F8F4F68ED820}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
+using InfoHub.Common;
+
 namespace InfoHub.ContentModel
 {
 	/// <summary>
@@ -9,9 +11,10 @@ namespace InfoHub.ContentModel
 	/// of a content container.  Includes logic to verify children have the corrent
 	/// Parent property
 	/// </summary>
-	internal class ContainerChildrenList : CollectionBase, IContentObjectList
+	internal class ContainerChildrenList : IContentObjectList
 	{
 		AbstractContentContainer _parent;
+		IList _list;
 
 		/// <summary>
 		/// Creates a new instance which will track the children of a specified
@@ -21,6 +24,12 @@ namespace InfoHub.ContentModel
 		public ContainerChildrenList(AbstractContentContainer parent)
 		{
 			_parent = parent;
+			ICollectionFactory cf = parent.RootPersistor.CollectionFactory;
+			if (cf == null) {
+				throw new ApplicationException();
+			}
+
+			_list = cf.CreateList(_parent);
 		}
 
 		public IContentContainer Parent {
@@ -31,7 +40,7 @@ namespace InfoHub.ContentModel
 
 		public IContentObject this[ int index ]  {
 			get  {
-				return( (IContentObject) List[index] );
+				return( (IContentObject) _list[index] );
 			}
 			set  {
 				//Do not support replacing list items this way;
@@ -42,23 +51,25 @@ namespace InfoHub.ContentModel
 		}
 
 		public int Add( IContentObject value )  {
-			return( List.Add( value ) );
+			OnValidate(value);
+			return( _list.Add( value ) );
 		}
 
 		public int IndexOf( IContentObject value )  {
-			return( List.IndexOf( value ) );
+			return( _list.IndexOf( value ) );
 		}
 
 		public void Insert( int index, IContentObject value )  {
-			List.Insert( index, value );
+			OnValidate(value);
+			_list.Insert( index, value );
 		}
 
 		public void Remove( IContentObject value )  {
-			List.Remove( value );
+			_list.Remove( value );
 		}
 
 		public bool Contains( IContentObject value )  {
-			return( List.Contains( value ) );
+			return( _list.Contains( value ) );
 		}
 
 		public void CarveOut(IContentContainer dest, int destIdx, int srcIdx, int srcLength) {
@@ -90,8 +101,10 @@ namespace InfoHub.ContentModel
 			}
 		}
 
-		protected override void OnValidate( Object value )  {
-			base.OnValidate(value);
+		protected virtual void OnValidate( Object value )  {
+			if (value == null) {
+				throw new ArgumentNullException("value");
+			}
 
 			if (!(value is IContentObject)) {
 				throw new ArgumentException();
@@ -100,5 +113,94 @@ namespace InfoHub.ContentModel
 			//Allow the content container to validate
 			_parent.OnValidateChild((IContentObject)value);
 		}
+		#region IList Members
+
+		public bool IsReadOnly {
+			get {
+				return _list.IsReadOnly;
+			}
+		}
+
+		object System.Collections.IList.this[int index] {
+			get {
+				return _list[index];
+			}
+			set {
+				OnValidate(value);
+				_list[index] = value;
+			}
+		}
+
+		public void RemoveAt(int index) {
+			_list.RemoveAt(index);
+		}
+
+		void System.Collections.IList.Insert(int index, object value) {
+			OnValidate(value);
+			_list.Insert(index, value);
+		}
+
+		void System.Collections.IList.Remove(object value) {
+			_list.Remove(value);
+		}
+
+		bool System.Collections.IList.Contains(object value) {
+			return _list.Contains(value);
+		}
+
+		public void Clear() {
+			_list.Clear();
+		}
+
+		int System.Collections.IList.IndexOf(object value) {
+			return _list.IndexOf(value);
+		}
+
+		int System.Collections.IList.Add(object value) {
+			OnValidate(value);
+			return _list.Add(value);
+		}
+
+		public bool IsFixedSize {
+			get {
+				return _list.IsFixedSize;
+			}
+		}
+
+		#endregion
+
+		#region ICollection Members
+
+		public bool IsSynchronized {
+			get {
+				return _list.IsSynchronized;
+			}
+		}
+
+		public int Count {
+			get {
+				return _list.Count;
+			}
+		}
+
+		public void CopyTo(Array array, int index) {
+			_list.CopyTo(array, index);
+		}
+
+		public object SyncRoot {
+			get {
+				return _list.SyncRoot;
+			}
+		}
+
+		#endregion
+
+		#region IEnumerable Members
+
+		public IEnumerator GetEnumerator() {
+			return _list.GetEnumerator();
+		}
+
+		#endregion
 	}
 }

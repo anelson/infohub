@@ -5,7 +5,7 @@ namespace InfoHub.ContentModel
 	/// <summary>
 	/// Base interface implemented by both documents and folders
 	/// </summary>
-	public interface IFileSystemObject : IContentContainer{
+	public interface IFileSystemObject : IContentContainer, IPersistenceBoundary {
 		String Name {get;}
 		String Path {get;}
 

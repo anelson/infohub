@@ -9,5 +9,7 @@ namespace InfoHub.ContentModel
 	public interface IRootFolder : IFolder
 	{
 		String Source {get;}
+
+		IObjectPersistor Persistor {get;}
 	}
 }

@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 
+using NUnit.Framework;
+
 using InfoHub.Common;
 using InfoHub.ContentModel;
-
-using NUnit.Framework;
 
 namespace InfoHub.Tests.ContentModel {
 	[TestFixture]
@@ -23,7 +23,7 @@ namespace InfoHub.Tests.ContentModel {
 
 		[SetUp]
 		public void CreateParent() {
-			_root = new GenericRootFolder("Foo");
+			_root = new GenericRootFolder("Foo", ContentModelMockObjectFactory.CreateObjectPersistor());
 			_parent = new GenericFolder(_root, "Bar");
 			_doc = new GenericDocument(_parent,  "Boo",  "text/plain");
 			_cont = new GenericContentContainer(_doc);

@@ -12,13 +12,17 @@ namespace InfoHub.ContentModel
 		
 		public AbstractContentContainer(IContentContainer parent) : base(parent)
 		{
-			_children = new ContainerChildrenList(this);
+			_children = null;
 		}
 
 		#region IContentContainer Members
 
 		public virtual IContentObjectList Children {
 			get {
+				//Just-in-time construction of the children list
+				if (_children == null) {
+					_children = new ContainerChildrenList(this);
+				}
 				return _children;
 			}
 		}

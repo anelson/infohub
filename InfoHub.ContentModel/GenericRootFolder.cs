@@ -7,7 +7,7 @@ namespace InfoHub.ContentModel
 	/// </summary>
 	public class GenericRootFolder : AbstractRootFolder
 	{
-		public GenericRootFolder(String source) : base(source)
+		public GenericRootFolder(String source, IObjectPersistor persistor) : base(source, persistor)
 		{
 		}
 	}

@@ -16,7 +16,7 @@ namespace InfoHub.Tests.ContentModel {
 
 		[SetUp]
 		public void CreateRoot() {
-			_root = new GenericRootFolder("Foo");
+			_root = new GenericRootFolder("Foo", ContentModelMockObjectFactory.CreateObjectPersistor());
 		}
 
 		[Test]

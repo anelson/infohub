@@ -16,7 +16,7 @@ namespace InfoHub.Tests.ContentModel
 	{
 		[Test]
 		public void EmptyTest() {
-			GenericRootFolder root = new GenericRootFolder("Foo");
+			GenericRootFolder root = new GenericRootFolder("Foo", ContentModelMockObjectFactory.CreateObjectPersistor());
 
 			Assert.AreEqual(0, root.Children.Count);
 			Assert.IsFalse(root.IsAncestorOf(root));
@@ -33,13 +33,19 @@ namespace InfoHub.Tests.ContentModel
 		[Test]
 		[ExpectedException(typeof(ArgumentNullException))]
 		public void NullSourceTest() {
-			GenericRootFolder root = new GenericRootFolder(null);
+			GenericRootFolder root = new GenericRootFolder(null, ContentModelMockObjectFactory.CreateObjectPersistor());
+		}
+
+		[Test]
+		[ExpectedException(typeof(ArgumentNullException))]
+		public void NullPersistorTest() {
+			GenericRootFolder root = new GenericRootFolder("Foo", null);
 		}
 
 		[Test]
 		[ExpectedException(typeof(ArgumentException))]
 		public void NonFsoChildTest() {
-			GenericRootFolder root = new GenericRootFolder("Foo");
+			GenericRootFolder root = new GenericRootFolder("Foo", ContentModelMockObjectFactory.CreateObjectPersistor());
 
 			//Attempt to add a non-IFileSystemObject child
 			GenericContentObject co = new GenericContentObject(root);
@@ -50,8 +56,8 @@ namespace InfoHub.Tests.ContentModel
 		public void MoveTest() {
 			//attempt to move a root folder to another container.
 			//That is not permitted
-			GenericRootFolder root = new GenericRootFolder("Foo");
-			GenericRootFolder root2 = new GenericRootFolder("Bar");
+			GenericRootFolder root = new GenericRootFolder("Foo", ContentModelMockObjectFactory.CreateObjectPersistor());
+			GenericRootFolder root2 = new GenericRootFolder("Bar", ContentModelMockObjectFactory.CreateObjectPersistor());
 
 			root.Move(root2);
 		}
